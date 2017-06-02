@@ -1,0 +1,25 @@
+{
+  "name": "heroku-list",
+  "version": "0.0.0",
+  "description": "Lists all active Heroku apps",
+  "main": "index.js",
+  "repository": "https://github.com/escaladesports/heroku-list.git",
+  "author": "Kennedy Rose <krose@escaladesports.com> (https://escaladesports.com)",
+  "license": "MIT",
+  "bin": {
+    "heroku-list": "./bin.js"
+  },
+  "keywords": [
+    "heroku",
+    "list",
+    "dynos",
+    "active",
+    "apps",
+    "applications",
+    "cli"
+  ],
+  "dependencies": {
+    "meow": "^3.7.0",
+    "persistent-cache": "^1.1.1"
+  }
+}
