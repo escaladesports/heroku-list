@@ -13,7 +13,7 @@ module.exports = opt => {
 
 function getOrganization(opt){
 	return new Promise((resolve, reject) => {
-		if(!opt.organization) return resolve(opt)
+		if(opt.organization) return resolve(opt)
 		cache.get('organization', (err, org) => {
 			if(err) reject(err)
 			else{
@@ -31,6 +31,9 @@ function cacheOrganization(opt){
 		})
 	})
 }
+function deleteCache(opt){
+	
+}
 
 // heroku apps -o escaladesports --json
 // heroku ps -a <app-name> --json
@@ -47,7 +50,10 @@ function getApps(opt){
 					promises.push(getDynos(arr[i].name))
 				}
 				Promise.all(promises)
-					.then(resolve)
+					.then(list => {
+						opt.list = list
+						resolve(opt)
+					})
 					.catch(reject)
 			}
 		})
@@ -67,7 +73,16 @@ function getDynos(name){
 		})
 	})
 }
-function outputList(list){
-	list = list.filter(str => str)
-	console.log(list.join('\n'))
+function outputList(opt){
+	opt.list = opt.list.filter(str => str)
+	let str = '\n'
+	if(opt.organization){
+		str += `Active apps for organization: ${opt.organization}:`
+	}
+	else{
+		str += 'Active personal apps:'
+	}
+	str += '\n------------------------------\n'
+	str += opt.list.join('\n')
+	console.log(str)
 }
