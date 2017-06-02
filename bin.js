@@ -1,14 +1,16 @@
 #!/usr/bin/env node
-const herokuDotenv = require('./index')
+const herokuList = require('./index')
 const meow = require('meow')
 const cli = meow(`
 	Usage
-	  $ heroku-list <function>
+	  $ heroku-list
 	Options
 	  -o, --organization  Lists all apps for given organization
+	  -p, --personal      Lists all personal apps
 `, {
 	alias: {
-		o: 'organization'
+		o: 'organization',
+		p: 'personal'
 	}
 })
-herokuDotenv(cli.flags)
+herokuList(cli.flags)
