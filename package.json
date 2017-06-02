@@ -20,6 +20,6 @@
   ],
   "dependencies": {
     "meow": "^3.7.0",
-    "persistent-cache": "^1.1.1"
+    "node-persist": "^2.0.11"
   }
 }

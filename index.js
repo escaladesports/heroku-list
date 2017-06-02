@@ -1,18 +1,33 @@
 'use strict'
 const exec = require('child_process').exec
-const cache = require('persistent-cache')()
+const storage = require('node-persist')
+
+
+module.exports = opt => {
+	opt = Object.assign({}, opt)
+	initStorage(opt)
+		.then(getOrganization)
+		.then(deleteCache)
+		.then(cacheOrganization)
+		.then(getApps)
+		.then(outputList)
+		.catch(console.error)
+}
+
+function initStorage(opt){
+	return new Promise((resolve, reject) => {
+		storage.init()
+			.then(() => resolve(opt))
+	})
+}
 
 // Pull organization cache if none specified
 function getOrganization(opt){
 	return new Promise((resolve, reject) => {
 		if(opt.organization || opt.personal) return resolve(opt)
-		cache.get('organization', (err, org) => {
-			if(err) reject(err)
-			else{
-				if(org) opt.organization = org
-				resolve(opt)
-			}
-		})
+		const org = storage.getItemSync('organization')
+		if(org) opt.organization = org
+		resolve(opt)
 	})
 }
 
@@ -20,9 +35,8 @@ function getOrganization(opt){
 function cacheOrganization(opt){
 	return new Promise((resolve, reject) => {
 		if(!opt.organization) return resolve(opt)
-		cache.put('organization', opt.organization, () => {
-			resolve(opt)
-		})
+		storage.setItemSync('organization', opt.organization)
+		resolve(opt)
 	})
 }
 
@@ -30,9 +44,8 @@ function cacheOrganization(opt){
 function deleteCache(opt){
 	return new Promise((resolve, reject) => {
 		if(!opt.personal) return resolve(opt)
-		cache.delete('organization', err => {
-			resolve(opt)
-		})
+		storage.setItemSync('organization', null)
+		resolve(opt)
 	})
 }
 
@@ -90,15 +103,4 @@ function outputList(opt){
 	str += '\n------------------------------\n'
 	str += opt.list.join('\n')
 	console.log(str)
-}
-
-
-module.exports = opt => {
-	opt = Object.assign({}, opt)
-	getOrganization(opt)
-		.then(deleteCache)
-		.then(cacheOrganization)
-		.then(getApps)
-		.then(outputList)
-		.catch(console.error)
 }

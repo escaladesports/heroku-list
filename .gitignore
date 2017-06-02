@@ -18,4 +18,4 @@ temp
 tmp
 temp-*
 uploads
-cache
+.node-persist
